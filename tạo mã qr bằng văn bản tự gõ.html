@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Tạo mã QR từ văn bản</title>
+  <title>Tạo mã QR từ văn bản Unicode</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,27 +11,18 @@
       background-color: #f4f4f4;
     }
 
-    h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .input-group {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
-
-    input {
-      padding: 10px;
+    textarea {
+      width: 90%;
+      max-width: 600px;
+      height: 150px;
       font-size: 16px;
-      width: 300px;
+      padding: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     button {
+      margin-top: 10px;
       padding: 10px 20px;
       font-size: 16px;
       background-color: #0077cc;
@@ -39,61 +30,48 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background-color: #005fa3;
     }
 
     #qrcode {
       margin-top: 30px;
-      display: inline-block;
-      background: white;
-      padding: 10px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
   </style>
 </head>
 <body>
-  <h2>Tạo mã QR từ văn bản</h2>
 
-  <div class="input-group">
-    <input type="text" id="text-input" placeholder="Nhập văn bản..." />
-    <button id="generate-btn">Tạo QR</button>
-  </div>
+  <h2>Tạo mã QR từ văn bản có dấu (tiếng Việt)</h2>
+  <textarea id="text-input" placeholder="Nhập văn bản có dấu tại đây..."></textarea><br>
+  <button onclick="generateQR()">Tạo mã QR</button>
 
   <div id="qrcode"></div>
 
-  <!-- Thư viện QRCodeJS -->
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <!-- Thư viện QRCode Generator -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
   <script>
-    const input = document.getElementById("text-input");
-    const button = document.getElementById("generate-btn");
-    const qrContainer = document.getElementById("qrcode");
-
-    function generateQRCode(text) {
-      qrContainer.innerHTML = "";
-      new QRCode(qrContainer, {
-        text: text,
-        width: 200,
-        height: 200,
-        colorDark: "#000000",
-        colorLight: "#ffffff",
-        correctLevel: QRCode.CorrectLevel.H
-      });
-    }
-
-    button.addEventListener("click", () => {
-      const text = input.value.trim();
-      if (text !== "") {
-        generateQRCode(text);
-      } else {
-        qrContainer.innerHTML = "";
-        alert("Vui lòng nhập nội dung trước khi tạo mã QR.");
+    function generateQR() {
+      const text = document.getElementById("text-input").value.trim();
+      if (!text) {
+        alert("Vui lòng nhập văn bản!");
+        return;
       }
-    });
+
+      const qrContainer = document.getElementById("qrcode");
+      qrContainer.innerHTML = ""; // clear QR cũ
+
+      try {
+        // Dùng Byte mode để hỗ trợ tiếng Việt (Unicode)
+        const qr = qrcode(0, 'H'); // typeNumber = 0 (tự động)
+        qr.addData(text, 'Byte');
+        qr.make();
+
+        const imgTag = qr.createImgTag(6); // scale 6
+        qrContainer.innerHTML = imgTag;
+      } catch (error) {
+        alert("❌ Lỗi tạo mã QR. Có thể văn bản quá dài hoặc có ký tự không hợp lệ.");
+        console.error(error);
+      }
+    }
   </script>
+
 </body>
 </html>
