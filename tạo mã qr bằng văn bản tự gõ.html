@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo mã QR từ văn bản</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f4f4f4;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .input-group {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    #qrcode {
+      margin-top: 30px;
+      display: inline-block;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+  <h2>Tạo mã QR từ văn bản</h2>
+
+  <div class="input-group">
+    <input type="text" id="text-input" placeholder="Nhập văn bản..." />
+    <button id="generate-btn">Tạo QR</button>
+  </div>
+
+  <div id="qrcode"></div>
+
+  <!-- Thư viện QRCodeJS -->
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    const input = document.getElementById("text-input");
+    const button = document.getElementById("generate-btn");
+    const qrContainer = document.getElementById("qrcode");
+
+    function generateQRCode(text) {
+      qrContainer.innerHTML = "";
+      new QRCode(qrContainer, {
+        text: text,
+        width: 200,
+        height: 200,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
+
+    button.addEventListener("click", () => {
+      const text = input.value.trim();
+      if (text !== "") {
+        generateQRCode(text);
+      } else {
+        qrContainer.innerHTML = "";
+        alert("Vui lòng nhập nội dung trước khi tạo mã QR.");
+      }
+    });
+  </script>
+</body>
+</html>
